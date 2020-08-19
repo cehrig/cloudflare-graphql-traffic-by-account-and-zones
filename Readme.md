@@ -24,3 +24,7 @@ export CLOUDFLARE_EMAIL=<your Email>
 `./traffic.sh 2020-07-01 2020-07-31`
 
 to pull usage metrics from the 1st to the 31st of July 2020
+
+### Additional requirements
+
+- `jq` command
