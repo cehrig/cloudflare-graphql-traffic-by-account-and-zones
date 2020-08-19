@@ -71,9 +71,13 @@ fi
 
 for date in "$@"
 do
-  date "+%Y-%m-%d" -d "$date" > /dev/null
+  if [[ $OSTYPE =~ "darwin" ]]; then
+    date -jf "%Y-%m-%d" "$date" +"%Y-%m-%d" >/dev/null
+  else
+    date "+%Y-%m-%d" -d "$date" >/dev/null
+  fi
   if [ "$?" -ne 0 ]; then
-    exit_with_error "Dates must be passed in format Year-Month-Day"
+    exit_with_error "Dates must be passed in format YYYY-MM-DD"
   fi
 done
 
@@ -88,7 +92,9 @@ do
   while read -r zone
   do
     IFS='#' read -r -a zoneInfo <<< "$zone"
-    echo "${accountInfo[1]};${zoneInfo[1]};$(get_traffic "${zoneInfo[0]}" "$1" "$2")"
+    if [ -n "${zoneInfo[0]}" ]; then
+      echo "${accountInfo[1]};${zoneInfo[1]};$(get_traffic "${zoneInfo[0]}" "$1" "$2")"
+    fi
 
   done <<< "$(get_zones "${accountInfo[0]}")"
 done <<< "$accounts"
